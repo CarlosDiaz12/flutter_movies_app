@@ -11,15 +11,13 @@ class ExampleViewModel extends BaseViewModel {
   Future<bool> hello() async {
     print('hello');
     var res = await repository.example();
-    var response;
+    bool response = false;
     res.fold((ex) {
-      response = false;
       print('Error');
     }, (data) {
       print('hay datos');
       response = true;
     });
-
     return response;
   }
 }

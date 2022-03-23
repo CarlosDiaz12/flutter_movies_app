@@ -1,2 +1,2 @@
 // example
-//const LOGO = 'assets/launcher/logo.png';
+const LOGO = 'assets/launcher/logo.png';
