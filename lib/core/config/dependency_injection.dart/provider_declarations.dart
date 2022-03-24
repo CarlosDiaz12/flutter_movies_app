@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_movies_app/core/constants/remote_constants.dart';
 import 'package:flutter_movies_app/data/repository/example_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -20,7 +21,13 @@ class DependencyInjection {
   ];
 
   static final List<SingleChildWidget> _repositoryProviders = [
-    Provider.value(value: ExampleRepository),
+    ProxyProvider<Dio, ExampleRepository>(
+      update: (context, dioClient, _) => ExampleRepository(
+        client: dioClient,
+      ),
+    ),
+
+    /*Provider.value(value: ExampleRepository),*/
 
     /*
     example:
@@ -50,10 +57,8 @@ class DependencyInjection {
   static Dio _initHttpClient() {
     var client = Dio(
       BaseOptions(
-        connectTimeout: 100000000,
-        receiveTimeout: 100000000,
         // TODO: change later
-        baseUrl: '',
+        baseUrl: RemoteConstants.API_URL_BASE,
       ),
     );
     return client;

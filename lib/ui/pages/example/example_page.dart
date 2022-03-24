@@ -25,7 +25,7 @@ class ExamplePage extends StatelessWidget {
                   onPressed: () {
                     viewModel.hello();
                   },
-                  child: Text('Hola'),
+                  child: Text('Call API'),
                 ),
               ],
             ),
