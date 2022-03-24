@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_movies_app/core/config/dependency_injection.dart/provider_declarations.dart';
 import 'package:provider/provider.dart';
 import 'core/config/routing/routes.gr.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load();
   DependencyInjection.setup();
   runApp(MyApp());
 }
