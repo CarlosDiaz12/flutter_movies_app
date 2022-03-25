@@ -4,20 +4,21 @@ import 'package:stacked/stacked.dart';
 
 class NowPlayingMoviesViewModel extends BaseViewModel {
   MoviesRepository repository;
+  ListMoviesResponse? _moviesList;
+  ListMoviesResponse? get moviesList => _moviesList;
   NowPlayingMoviesViewModel({
     required this.repository,
   });
 
-  Future<ListMoviesResponse> loadData() async {
+  Future<void> loadData() async {
     clearErrors();
+    setBusy(true);
     var res = await repository.getNowPlayingMovies();
-    var response;
     res.fold((ex) {
       setError(ex);
-      response = null;
     }, (data) {
-      response = data;
+      _moviesList = data;
     });
-    return response;
+    setBusy(false);
   }
 }

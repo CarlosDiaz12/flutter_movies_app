@@ -13,7 +13,8 @@ class MoviesRepository extends MoviesRepositoryAbstract {
     try {
       var request = await _client.get(
         '/movie/now_playing',
-        queryParameters: RemoteConstants.GetApiKeyQueryParam(),
+        queryParameters: RemoteConstants.GetApiKeyQueryParam()
+          ..addAll({'page': 1}),
       );
       return Right(ListMoviesResponse.fromMap(request.data));
     } on DioError catch (e) {

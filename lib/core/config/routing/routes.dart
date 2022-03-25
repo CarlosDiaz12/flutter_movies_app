@@ -5,8 +5,8 @@ import 'package:flutter_movies_app/ui/pages/now_playing_movies/now_playing_movie
 @AdaptiveAutoRouter(
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
-    AutoRoute(page: HomePage, initial: true),
-    AutoRoute(page: NowPlayingMoviesPage),
+    // AutoRoute(page: HomePage, initial: true),
+    AutoRoute(page: NowPlayingMoviesPage, initial: true),
   ],
 )
 class $AppRouter {}

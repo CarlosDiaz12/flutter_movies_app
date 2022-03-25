@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_movies_app/core/config/dependency_injection.dart/provider_declarations.dart';
@@ -18,32 +17,12 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: DependencyInjection.providers,
       child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         routerDelegate: _appRouter.delegate(),
         routeInformationParser: _appRouter.defaultRouteParser(),
-        title: 'Flutter Base Project',
+        title: 'Flutter Movies Project',
         theme: ThemeData(
           primarySwatch: Colors.blue,
-        ),
-      ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Flutter Base'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            AutoRouter.of(context).push(NowPlayingMoviesRoute());
-          },
-          child: Text('Go to example'),
         ),
       ),
     );
