@@ -8,7 +8,12 @@ class LoginFailedException implements Exception {
   LoginFailedException(this.cause);
 }
 
-class MovieNotFoundException implements Exception {
+class NotFoundException implements Exception {
   String cause;
-  MovieNotFoundException(this.cause);
+  NotFoundException(this.cause);
+}
+
+class UnknownErrorException implements Exception {
+  String cause;
+  UnknownErrorException(this.cause);
 }

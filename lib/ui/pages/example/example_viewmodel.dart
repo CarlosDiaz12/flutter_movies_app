@@ -1,8 +1,8 @@
-import 'package:flutter_movies_app/data/repository/example_repository.dart';
+import 'package:flutter_movies_app/data/repository/movies_repository.dart';
 import 'package:stacked/stacked.dart';
 
 class ExampleViewModel extends BaseViewModel {
-  ExampleRepository repository;
+  MoviesRepository repository;
 
   ExampleViewModel({
     required this.repository,
@@ -10,7 +10,7 @@ class ExampleViewModel extends BaseViewModel {
 
   Future<bool> hello() async {
     print('hello');
-    var res = await repository.example();
+    var res = await repository.getNowPlayingMovies();
     bool response = false;
     res.fold((ex) {
       print('Error');
