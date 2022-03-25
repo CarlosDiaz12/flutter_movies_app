@@ -15,26 +15,80 @@ class NowPlayingMoviesPage extends StatelessWidget {
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Example Page'),
+            title: Text('Now Playing Movies'),
           ),
           body: viewModel.isBusy
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : GridView.builder(
+              : ListView.separated(
                   itemCount: viewModel.moviesList!.results.length,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: MediaQuery.of(context).size.width / 2,
-                    childAspectRatio: 5 / 3,
-                    crossAxisSpacing: 10,
-                    // mainAxisSpacing: 5,
-                  ),
-                  padding: const EdgeInsets.all(4),
+                  separatorBuilder: (ctx, int) => SizedBox(height: 12),
                   itemBuilder: (ctx, index) {
                     var movie = viewModel.moviesList!.results[index];
-                    return Container(
-                      child: Image.network(
-                          '${RemoteConstants.IMAGE_API_URL}${movie.backdrop_path}'),
+                    return Card(
+                      elevation: 8,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),
+                                child: Image.network(
+                                    '${RemoteConstants.IMAGE_API_URL}${movie.backdrop_path}'),
+                              ),
+                              Positioned(
+                                left: 8,
+                                top: 8,
+                                child: Text(
+                                  '${movie.title}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 26,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 8,
+                                bottom: 8,
+                                child: Text(
+                                  '${movie.release_date?.replaceAll('-', '/')}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 8,
+                                bottom: 8,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star_rate_sharp,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      '${movie.vote_average}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),
