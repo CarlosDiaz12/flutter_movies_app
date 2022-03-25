@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         routeInformationParser: _appRouter.defaultRouteParser(),
         title: 'Flutter Movies Project',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.green,
         ),
       ),
     );

@@ -1,19 +1,20 @@
-class ServerException implements Exception {
+class BaseException implements Exception {
   String cause;
-  ServerException(this.cause);
+  BaseException(this.cause);
 }
 
-class LoginFailedException implements Exception {
-  String cause;
-  LoginFailedException(this.cause);
+class ServerException extends BaseException {
+  ServerException(String message) : super(message);
 }
 
-class NotFoundException implements Exception {
-  String cause;
-  NotFoundException(this.cause);
+class LoginFailedException extends BaseException {
+  LoginFailedException(String message) : super(message);
 }
 
-class UnknownErrorException implements Exception {
-  String cause;
-  UnknownErrorException(this.cause);
+class NotFoundException extends BaseException {
+  NotFoundException(String message) : super(message);
+}
+
+class UnknownErrorException extends BaseException {
+  UnknownErrorException(String message) : super(message);
 }
