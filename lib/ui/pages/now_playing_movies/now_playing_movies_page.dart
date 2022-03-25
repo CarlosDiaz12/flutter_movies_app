@@ -23,7 +23,7 @@ class NowPlayingMoviesPage extends StatelessWidget {
                 )
               : ListView.separated(
                   itemCount: viewModel.moviesList!.results.length,
-                  separatorBuilder: (ctx, int) => SizedBox(height: 12),
+                  separatorBuilder: (ctx, int) => SizedBox(height: 6),
                   itemBuilder: (ctx, index) {
                     var movie = viewModel.moviesList!.results[index];
                     return Card(
@@ -39,7 +39,31 @@ class NowPlayingMoviesPage extends StatelessWidget {
                                   topRight: Radius.circular(10),
                                 ),
                                 child: Image.network(
-                                    '${RemoteConstants.IMAGE_API_URL}${movie.backdrop_path}'),
+                                  '${RemoteConstants.IMAGE_API_URL}${movie.backdrop_path}',
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Container(
+                                      width: 500,
+                                      height: 250,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                               Positioned(
                                 left: 8,
@@ -56,13 +80,17 @@ class NowPlayingMoviesPage extends StatelessWidget {
                               Positioned(
                                 right: 8,
                                 bottom: 8,
-                                child: Text(
-                                  '${movie.release_date?.replaceAll('-', '/')}',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      '${movie.release_date?.replaceAll('-', '/')}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Positioned(
@@ -71,9 +99,11 @@ class NowPlayingMoviesPage extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      Icons.star_rate_sharp,
+                                      Icons.rate_review,
+                                      size: 20,
                                       color: Colors.white,
                                     ),
+                                    SizedBox(width: 8),
                                     Text(
                                       '${movie.vote_average}',
                                       style: TextStyle(
