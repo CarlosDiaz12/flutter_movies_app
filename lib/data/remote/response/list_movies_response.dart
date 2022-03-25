@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_movies_app/domain/models/movie.dart';
 
 class ListMoviesResponse {
-  final List<Movie> results;
+  List<Movie> results;
 
   ListMoviesResponse({
     required this.results,

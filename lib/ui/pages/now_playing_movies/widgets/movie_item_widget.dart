@@ -27,6 +27,8 @@ class MovieItem extends StatelessWidget {
                 ),
                 child: Image.network(
                   '${RemoteConstants.IMAGE_API_URL}${movie.backdrop_path}',
+                  cacheWidth: 500,
+                  cacheHeight: 300,
                   loadingBuilder: (BuildContext context, Widget child,
                       ImageChunkEvent? loadingProgress) {
                     if (loadingProgress == null) {
@@ -34,7 +36,7 @@ class MovieItem extends StatelessWidget {
                     }
                     return Container(
                       width: 500,
-                      height: 250,
+                      height: 300,
                       child: Center(
                         child: CircularProgressIndicator(
                           value: loadingProgress.expectedTotalBytes != null

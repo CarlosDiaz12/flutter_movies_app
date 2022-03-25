@@ -65,6 +65,7 @@ class _MainBody extends ViewModelWidget<NowPlayingMoviesViewModel> {
             child: CircularProgressIndicator(),
           )
         : ListView.separated(
+            cacheExtent: 50,
             itemCount: viewModel.moviesList!.results.length,
             separatorBuilder: (ctx, int) => SizedBox(height: 6),
             itemBuilder: (ctx, index) {

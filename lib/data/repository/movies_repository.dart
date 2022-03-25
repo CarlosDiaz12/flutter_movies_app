@@ -16,7 +16,10 @@ class MoviesRepository extends MoviesRepositoryAbstract {
         queryParameters: RemoteConstants.GetApiKeyQueryParam()
           ..addAll({'page': 1}),
       );
-      return Right(ListMoviesResponse.fromMap(request.data));
+      var result = ListMoviesResponse.fromMap(request.data);
+      result.results.sort(
+          (a, b) => a.title!.toLowerCase().compareTo(b.title!.toLowerCase()));
+      return Right(result);
     } on DioError catch (e) {
       if (e.response?.statusCode == 404) {
         return Left(NotFoundException('Recurso no encontrado.'));
