@@ -32,6 +32,7 @@ class NowPlayingMoviesPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Stack(
+                            fit: StackFit.loose,
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.only(
@@ -66,14 +67,23 @@ class NowPlayingMoviesPage extends StatelessWidget {
                                 ),
                               ),
                               Positioned(
-                                left: 8,
-                                top: 8,
-                                child: Text(
-                                  '${movie.title}',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 26,
+                                left: 0,
+                                top: 0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black26,
+                                    borderRadius: BorderRadius.only(
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    '${movie.title}',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24,
+                                    ),
                                   ),
                                 ),
                               ),
