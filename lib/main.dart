@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            AutoRouter.of(context).push(ExampleRoute());
+            AutoRouter.of(context).push(NowPlayingMoviesRoute());
           },
           child: Text('Go to example'),
         ),
