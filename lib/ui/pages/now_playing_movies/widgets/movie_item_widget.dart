@@ -14,12 +14,12 @@ class MovieItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        AutoRouter.of(context).push(MovieDetailsRoute(movieId: movie.id!));
-      },
-      child: Card(
-        elevation: 8,
+    return Card(
+      elevation: 8,
+      child: InkWell(
+        onTap: () {
+          AutoRouter.of(context).push(MovieDetailsRoute(movieId: movie.id!));
+        },
         child: ClipRRect(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10),
