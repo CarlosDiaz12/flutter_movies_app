@@ -1,11 +1,11 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'genre.dart';
-import 'production_company.dart';
-import 'production_country.dart';
-import 'spoken_language.dart';
+import 'package:flutter_movies_app/domain/models/genre.dart';
+import 'package:flutter_movies_app/domain/models/production_company.dart';
+import 'package:flutter_movies_app/domain/models/production_country.dart';
+import 'package:flutter_movies_app/domain/models/spoken_language.dart';
 
-class MovieDetail {
+class GetMovieDetailResponse {
   bool? adult;
   String? backdro_path;
   int? budget;

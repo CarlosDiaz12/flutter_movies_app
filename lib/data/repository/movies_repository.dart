@@ -2,23 +2,32 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_movies_app/core/constants/remote_constants.dart';
 import 'package:flutter_movies_app/core/error/exceptions.dart';
+import 'package:flutter_movies_app/data/mapper/movie_mapper.dart';
 import 'package:flutter_movies_app/data/remote/response/list_movies_response.dart';
+import 'package:flutter_movies_app/domain/models/movie.dart';
 import 'package:flutter_movies_app/domain/repository/movies_respository_abstract.dart';
 
 class MoviesRepository extends MoviesRepositoryAbstract {
-  final Dio _client;
-  MoviesRepository({required Dio client}) : _client = client;
+  late final Dio _client;
+  late MovieMapper _movieMapper;
+  MoviesRepository({required Dio client}) {
+    _client = client;
+    _movieMapper = MovieMapper();
+  }
   @override
-  Future<Either<Exception, ListMoviesResponse>> getNowPlayingMovies() async {
+  Future<Either<Exception, List<Movie>>> getNowPlayingMovies() async {
     try {
       var request = await _client.get(
         '/movie/now_playing',
         queryParameters: RemoteConstants.GetApiKeyQueryParam()
           ..addAll({'page': 1}),
       );
-      var result = ListMoviesResponse.fromMap(request.data);
-      result.results.sort(
+      var response = ListMoviesResponse.fromMap(request.data);
+      response.results.sort(
           (a, b) => a.title!.toLowerCase().compareTo(b.title!.toLowerCase()));
+
+      var result =
+          response.results.map((m) => _movieMapper.toModel(m)).toList();
       return Right(result);
     } on DioError catch (e) {
       if (e.response?.statusCode == 404) {
