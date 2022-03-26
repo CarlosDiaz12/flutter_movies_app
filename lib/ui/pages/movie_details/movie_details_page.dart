@@ -6,20 +6,25 @@ import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 
 class MovieDetailsPage extends StatelessWidget {
-  const MovieDetailsPage({Key? key}) : super(key: key);
+  final int movieId;
+  const MovieDetailsPage({Key? key, required this.movieId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<MovieDetailsViewModel>.reactive(
       builder: (context, viewModel, _) {
         return Scaffold(
-            appBar: AppBar(
-              title: Text('Movie Details'),
-            ),
-            body: viewModel.hasError ? _ErrorWidget() : _MainBody());
+          appBar: AppBar(
+            title: Text('Movie Details'),
+          ),
+          body: viewModel.hasError ? _ErrorWidget() : _MainBody(),
+        );
       },
-      onModelReady: (viewModel) async {},
+      onModelReady: (viewModel) async {
+        await viewModel.loadData();
+      },
       viewModelBuilder: () => MovieDetailsViewModel(
+        movieId: movieId,
         repository: Provider.of<MoviesRepository>(context),
       ),
     );
@@ -35,7 +40,7 @@ class _MainBody extends ViewModelWidget<MovieDetailsViewModel> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : Container();
+        : Center(child: Text('${viewModel.movie?.title}'));
   }
 }
 

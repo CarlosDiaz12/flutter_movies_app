@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movies_app/core/config/routing/routes.gr.dart';
 import 'package:flutter_movies_app/core/constants/remote_constants.dart';
 import 'package:flutter_movies_app/domain/models/movie.dart';
 
@@ -12,21 +14,26 @@ class MovieItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 8,
-      child: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(10),
-          topRight: Radius.circular(10),
-        ),
-        child: Stack(
-          fit: StackFit.loose,
-          children: [
-            _MovieBanner(bannerUrl: movie.backdrop_path),
-            _MovieTitle(title: movie.title),
-            _MovieReleaseDate(releaseDate: movie.release_date),
-            _MovieAverageVote(voteAverage: movie.vote_average)
-          ],
+    return GestureDetector(
+      onTap: () {
+        AutoRouter.of(context).push(MovieDetailsRoute(movieId: movie.id!));
+      },
+      child: Card(
+        elevation: 8,
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+          ),
+          child: Stack(
+            fit: StackFit.loose,
+            children: [
+              _MovieBanner(bannerUrl: movie.backdrop_path),
+              _MovieTitle(title: movie.title),
+              _MovieReleaseDate(releaseDate: movie.release_date),
+              _MovieAverageVote(voteAverage: movie.vote_average)
+            ],
+          ),
         ),
       ),
     );

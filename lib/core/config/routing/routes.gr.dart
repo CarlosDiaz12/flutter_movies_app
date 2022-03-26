@@ -28,8 +28,10 @@ class AppRouter extends _i3.RootStackRouter {
           routeData: routeData, child: const _i1.NowPlayingMoviesPage());
     },
     MovieDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<MovieDetailsRouteArgs>();
       return _i3.AdaptivePage<dynamic>(
-          routeData: routeData, child: const _i2.MovieDetailsPage());
+          routeData: routeData,
+          child: _i2.MovieDetailsPage(key: args.key, movieId: args.movieId));
     }
   };
 
@@ -50,9 +52,24 @@ class NowPlayingMoviesRoute extends _i3.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.MovieDetailsPage]
-class MovieDetailsRoute extends _i3.PageRouteInfo<void> {
-  const MovieDetailsRoute()
-      : super(MovieDetailsRoute.name, path: '/movie-details-page');
+class MovieDetailsRoute extends _i3.PageRouteInfo<MovieDetailsRouteArgs> {
+  MovieDetailsRoute({_i4.Key? key, required int movieId})
+      : super(MovieDetailsRoute.name,
+            path: '/movie-details-page',
+            args: MovieDetailsRouteArgs(key: key, movieId: movieId));
 
   static const String name = 'MovieDetailsRoute';
+}
+
+class MovieDetailsRouteArgs {
+  const MovieDetailsRouteArgs({this.key, required this.movieId});
+
+  final _i4.Key? key;
+
+  final int movieId;
+
+  @override
+  String toString() {
+    return 'MovieDetailsRouteArgs{key: $key, movieId: $movieId}';
+  }
 }
