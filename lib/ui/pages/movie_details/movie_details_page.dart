@@ -94,29 +94,36 @@ class _BasicDetailsWidget extends StatelessWidget {
           _ReleaseDateWidget(releaseDate: releaseDate),
           SizedBox(height: 10),
           Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
               _VoteAverageWidget(voteAverage: voteAverage),
               SizedBox(width: 20),
-              ...genres!
-                  .map(
-                    (e) => Padding(
+              Container(
+                width: 320,
+                height: 50,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: genres?.length,
+                  itemBuilder: (ctx, index) {
+                    var item = genres?[index];
+                    return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6.0),
                       child: Chip(
                         backgroundColor: Colors.green[600],
                         label: Text(
-                          '${e.name}',
+                          '${item?.name}',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
                           ),
                         ),
                       ),
-                    ),
-                  )
-                  .toList()
+                    );
+                  },
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
