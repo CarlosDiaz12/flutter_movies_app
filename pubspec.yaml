@@ -48,6 +48,9 @@ dependencies:
 
   #ui
   flutter_rating_bar: ^4.0.0
+
+  # local storage
+  shared_preferences: ^2.0.13
 dev_dependencies:
   flutter_test:
     sdk: flutter

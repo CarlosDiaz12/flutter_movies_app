@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_movies_app/core/config/dependency_injection.dart/provider_declarations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/config/routing/routes.gr.dart';
 
 Future<void> main() async {
   await dotenv.load();
+  var sharedPrefs = await SharedPreferences.getInstance();
+  DependencyInjection.loadSharedPref(sharedPrefs);
   DependencyInjection.setup();
   runApp(MyApp());
 }

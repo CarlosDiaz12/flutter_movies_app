@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movies_app/core/error/exceptions.dart';
+import 'package:flutter_movies_app/data/local/local_dao.dart';
 import 'package:flutter_movies_app/data/repository/movies_repository.dart';
 import 'package:flutter_movies_app/ui/pages/now_playing_movies/widgets/movie_item_widget.dart';
 import 'package:provider/provider.dart';
@@ -22,8 +23,10 @@ class NowPlayingMoviesPage extends StatelessWidget {
       },
       onModelReady: (viewModel) async {
         await viewModel.loadData();
+        await viewModel.checkAndGetSessionId();
       },
       viewModelBuilder: () => NowPlayingMoviesViewModel(
+        localDao: Provider.of<LocalDao>(context),
         repository: Provider.of<MoviesRepository>(context),
       ),
     );

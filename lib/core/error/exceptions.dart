@@ -18,3 +18,7 @@ class NotFoundException extends BaseException {
 class UnknownErrorException extends BaseException {
   UnknownErrorException(String message) : super(message);
 }
+
+class NotAuthorizedException extends BaseException {
+  NotAuthorizedException(String message) : super(message);
+}
