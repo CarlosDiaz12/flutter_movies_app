@@ -96,7 +96,7 @@ class _BasicDetailsWidget extends StatelessWidget {
           SizedBox(height: 10),
           Row(
             children: [
-              _VoteAverageWidget(voteAverage: voteAverage),
+              _VoteAverageWidget(),
               SizedBox(width: 20),
               Container(
                 width: 320,
@@ -145,50 +145,7 @@ class _OverviewSection extends ViewModelWidget<MovieDetailsViewModel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RatingBar.builder(
-                initialRating: viewModel.currentRate,
-                minRating: 1,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                itemPadding: EdgeInsets.only(right: 4),
-                itemBuilder: (context, _) => Icon(
-                  Icons.star,
-                  color: Colors.amber,
-                ),
-                onRatingUpdate: (rating) async {
-                  viewModel.updateRate(rating);
-                },
-              ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                    ),
-                  ),
-                ),
-                onPressed: () async {
-                  if (viewModel.currentRate != 0) {
-                    await viewModel.rateMovie();
-                  }
-                },
-                child: viewModel.busy(viewModel.rateMovieSuccess)
-                    ? Center(
-                        child: CircularProgressIndicator(color: Colors.white),
-                      )
-                    : Text(
-                        'Rate',
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                      ),
-              ),
-            ],
-          ),
+          _RatingSection(),
           SizedBox(height: 10),
           _SubtitleWidget(
             text: 'Sinopsis',
@@ -207,6 +164,84 @@ class _OverviewSection extends ViewModelWidget<MovieDetailsViewModel> {
           _CastListWidget(contentWidth: contentWidth),
         ],
       ),
+    );
+  }
+}
+
+class _RatingSection extends ViewModelWidget<MovieDetailsViewModel> {
+  const _RatingSection({
+    Key? key,
+  }) : super(key: key);
+
+  _showSnackBar(BuildContext ctx) {
+    const snackBar = SnackBar(
+      content: Text(
+        'Movie rated succesfuly!',
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.green,
+    );
+    ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+  }
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        RatingBar.builder(
+          initialRating: viewModel.currentRate,
+          minRating: 1,
+          direction: Axis.horizontal,
+          allowHalfRating: true,
+          itemCount: 5,
+          itemPadding: EdgeInsets.only(right: 4),
+          itemBuilder: (context, _) => Icon(
+            Icons.star,
+            color: Colors.amber,
+          ),
+          onRatingUpdate: (rating) {
+            viewModel.updateRate(rating);
+          },
+        ),
+        ElevatedButton(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+              ),
+            ),
+          ),
+          onPressed: () async {
+            if (viewModel.currentRate != 0) {
+              await viewModel.rateMovie();
+              await viewModel.reloadRatingInfo();
+              _showSnackBar(context);
+            }
+          },
+          child: viewModel.busy(viewModel.rateMovieSuccess)
+              ? Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                )
+              : Text(
+                  'Rate',
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+        ),
+      ],
     );
   }
 }
@@ -431,26 +466,35 @@ class _TitleWidget extends StatelessWidget {
   }
 }
 
-class _VoteAverageWidget extends StatelessWidget {
-  final double? voteAverage;
+class _VoteAverageWidget extends ViewModelWidget<MovieDetailsViewModel> {
   const _VoteAverageWidget({
-    this.voteAverage,
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, viewModel) {
     return CircleAvatar(
       radius: 20,
       backgroundColor: Colors.white,
-      child: Text(
-        '$voteAverage',
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
+      child: viewModel.busy(viewModel.movieRate)
+          ? Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.black,
+                ),
+              ),
+            )
+          : Text(
+              '${viewModel.movieRate}',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
     );
   }
 }

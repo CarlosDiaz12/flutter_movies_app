@@ -13,6 +13,8 @@ class MovieDetailsViewModel extends BaseViewModel {
   bool get rateMovieSuccess => _rateMovieSuccess;
   double _currentRate = 0.0;
   double get currentRate => _currentRate;
+  double _movieRate = 0;
+  double get movieRate => _movieRate;
   int movieId;
   MovieDetailsViewModel({
     required this.movieId,
@@ -37,6 +39,7 @@ class MovieDetailsViewModel extends BaseViewModel {
       setError(ex);
     }, (data) {
       _movie = data;
+      _movieRate = data.vote_average!;
     });
     setBusy(false);
   }
@@ -53,6 +56,18 @@ class MovieDetailsViewModel extends BaseViewModel {
     setBusyForObject(_cast, false);
   }
 
+  Future<void> reloadRatingInfo() async {
+    clearErrors();
+    setBusyForObject(_movieRate, true);
+    var res = await repository.getMovieDetails(movieId);
+    res.fold((ex) {
+      setError(ex);
+    }, (data) {
+      _movieRate = data.vote_average!;
+    });
+    setBusyForObject(_movieRate, false);
+  }
+
   Future<void> rateMovie() async {
     _rateMovieSuccess = false;
     clearErrors();
@@ -63,6 +78,7 @@ class MovieDetailsViewModel extends BaseViewModel {
     }, (data) {
       _rateMovieSuccess = data;
     });
+    _currentRate = 0.0;
     setBusyForObject(_rateMovieSuccess, false);
   }
 }

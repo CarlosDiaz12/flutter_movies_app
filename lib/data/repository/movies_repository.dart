@@ -106,7 +106,8 @@ class MoviesRepository extends MoviesRepositoryAbstract {
   @override
   Future<Either<Exception, bool>> rateMovie(int movieId, double value) async {
     try {
-      var requestData = RateMovieRequest(value: value);
+      var realValue = value * 2;
+      var requestData = RateMovieRequest(value: realValue);
       var sesionId = _localDao.getGuestSessionId();
       var request = await _client.post(
         '/movie/$movieId/rating',
