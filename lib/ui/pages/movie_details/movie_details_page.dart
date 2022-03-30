@@ -5,6 +5,7 @@ import 'package:flutter_movies_app/data/repository/movies_repository.dart';
 import 'package:flutter_movies_app/domain/models/genre.dart';
 import 'package:flutter_movies_app/domain/models/movie_cast.dart';
 import 'package:flutter_movies_app/ui/pages/movie_details/movie_details_viewmodel.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 
@@ -144,6 +145,51 @@ class _OverviewSection extends ViewModelWidget<MovieDetailsViewModel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              RatingBar.builder(
+                initialRating: viewModel.currentRate,
+                minRating: 1,
+                direction: Axis.horizontal,
+                allowHalfRating: true,
+                itemCount: 5,
+                itemPadding: EdgeInsets.only(right: 4),
+                itemBuilder: (context, _) => Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                ),
+                onRatingUpdate: (rating) async {
+                  viewModel.updateRate(rating);
+                },
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                  ),
+                ),
+                onPressed: () async {
+                  if (viewModel.currentRate != 0) {
+                    await viewModel.rateMovie();
+                  }
+                },
+                child: viewModel.busy(viewModel.rateMovieSuccess)
+                    ? Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      )
+                    : Text(
+                        'Rate',
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
           _SubtitleWidget(
             text: 'Sinopsis',
           ),

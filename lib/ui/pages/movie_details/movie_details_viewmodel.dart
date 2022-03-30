@@ -9,11 +9,20 @@ class MovieDetailsViewModel extends BaseViewModel {
   MovieDetail? get movie => _movie;
   MovieCast? _cast;
   MovieCast? get cast => _cast;
+  bool _rateMovieSuccess = false;
+  bool get rateMovieSuccess => _rateMovieSuccess;
+  double _currentRate = 0.0;
+  double get currentRate => _currentRate;
   int movieId;
   MovieDetailsViewModel({
     required this.movieId,
     required this.repository,
   });
+
+  void updateRate(double newValue) {
+    _currentRate = newValue;
+    notifyListeners();
+  }
 
   Future<void> loadData() async {
     await _loadBasicDetails();
@@ -42,5 +51,18 @@ class MovieDetailsViewModel extends BaseViewModel {
       _cast = data;
     });
     setBusyForObject(_cast, false);
+  }
+
+  Future<void> rateMovie() async {
+    _rateMovieSuccess = false;
+    clearErrors();
+    setBusyForObject(_rateMovieSuccess, true);
+    var res = await repository.rateMovie(movieId, currentRate);
+    res.fold((ex) {
+      setErrorForObject(_rateMovieSuccess, ex);
+    }, (data) {
+      _rateMovieSuccess = data;
+    });
+    setBusyForObject(_rateMovieSuccess, false);
   }
 }

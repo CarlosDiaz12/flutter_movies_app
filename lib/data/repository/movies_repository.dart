@@ -5,9 +5,11 @@ import 'package:flutter_movies_app/core/error/exceptions.dart';
 import 'package:flutter_movies_app/data/mapper/movie_cast_mapper.dart';
 import 'package:flutter_movies_app/data/mapper/movie_details_mapper.dart';
 import 'package:flutter_movies_app/data/mapper/movie_mapper.dart';
+import 'package:flutter_movies_app/data/remote/request/rate_movie_request.dart';
 import 'package:flutter_movies_app/data/remote/response/get_movie_cast.dart';
 import 'package:flutter_movies_app/data/remote/response/get_movie_detail_response.dart';
 import 'package:flutter_movies_app/data/remote/response/list_movies_response.dart';
+import 'package:flutter_movies_app/data/remote/response/rate_movie_response.dart';
 import 'package:flutter_movies_app/domain/models/movie.dart';
 import 'package:flutter_movies_app/domain/models/movie_cast.dart';
 import 'package:flutter_movies_app/domain/models/movie_detail.dart';
@@ -76,6 +78,31 @@ class MoviesRepository extends MoviesRepositoryAbstract {
       var response = GetMovieCastResponse.fromMap(request.data);
       var result = MovieCastMapper().toModel(response);
       return Right(result);
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 404) {
+        return Left(NotFoundException('Recurso no encontrado.'));
+      }
+      return Left(ServerException(
+          'Error: ${e.response?.statusCode} intentado conectar al servidor'));
+    } catch (e) {
+      return Left(UnknownErrorException('Error inesperado: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Exception, bool>> rateMovie(int movieId, double value) async {
+    try {
+      var requestData = RateMovieRequest(value: value);
+      var request = await _client.post(
+        '/movie/$movieId/rating',
+        data: requestData.toMap(),
+        queryParameters: RemoteConstants.GetApiKeyQueryParam(),
+      );
+      var response = RateMovieRespose.fromMap(request.data);
+      if (response.status_code != 1)
+        return Left(NotFoundException("El recurso no fue encontrado"));
+
+      return Right(true);
     } on DioError catch (e) {
       if (e.response?.statusCode == 404) {
         return Left(NotFoundException('Recurso no encontrado.'));
