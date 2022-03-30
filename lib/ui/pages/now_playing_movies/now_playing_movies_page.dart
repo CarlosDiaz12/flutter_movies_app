@@ -66,10 +66,10 @@ class _MainBody extends ViewModelWidget<NowPlayingMoviesViewModel> {
           )
         : ListView.separated(
             cacheExtent: 50,
-            itemCount: viewModel.moviesList!.results.length,
+            itemCount: viewModel.moviesList!.length,
             separatorBuilder: (ctx, int) => SizedBox(height: 6),
             itemBuilder: (ctx, index) {
-              var movie = viewModel.moviesList!.results[index];
+              var movie = viewModel.moviesList![index];
               return MovieItem(movie: movie);
             },
           );

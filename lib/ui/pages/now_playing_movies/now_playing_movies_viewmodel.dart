@@ -1,12 +1,12 @@
-import 'package:flutter_movies_app/data/remote/response/list_movies_response.dart';
 import 'package:flutter_movies_app/data/repository/movies_repository.dart';
+import 'package:flutter_movies_app/domain/models/movie.dart';
 import 'package:stacked/stacked.dart';
 
 class NowPlayingMoviesViewModel extends BaseViewModel {
   final String busyObjectKey = 'movies-list';
   MoviesRepository repository;
-  ListMoviesResponse? _moviesList;
-  ListMoviesResponse? get moviesList => _moviesList;
+  List<Movie>? _moviesList;
+  List<Movie>? get moviesList => _moviesList;
   NowPlayingMoviesViewModel({
     required this.repository,
   });
