@@ -27,19 +27,29 @@ class NowPlayingMoviesViewModel extends BaseViewModel {
   }
 
   Future<void> checkAndGetSessionId() async {
-    var res = localDao.getGuestSessionId();
-    if (res == null) {
+    var currentSessionId = localDao.getGuestSessionId();
+    bool hasToUpdateSession = false;
+    if (currentSessionId == null) {
+      hasToUpdateSession = true;
+    } else {
+      var sessionExpireDate = localDao.getSessionExpireDate();
+      if (sessionExpireDate == null ||
+          sessionExpireDate.compareTo(DateTime.now()) < 0) {
+        hasToUpdateSession = true;
+      }
+    }
+
+    if (hasToUpdateSession) {
       String newGuestId = '';
-      var res = await repository.getGuestSessionId();
-      res.fold((ex) {
+      String newSessionExpireDate = '';
+      var response = await repository.getGuestSessionId();
+      response.fold((ex) {
         setError(ex);
       }, (data) {
-        newGuestId = data!;
+        newGuestId = data.guest_session_id;
+        newSessionExpireDate = data.expires_at;
       });
-
-      if (newGuestId.isNotEmpty) {
-        await localDao.saveGuestSessionId(newGuestId);
-      }
+      await localDao.saveGuestSessionInfo(newGuestId, newSessionExpireDate);
     }
   }
 }
