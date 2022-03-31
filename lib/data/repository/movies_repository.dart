@@ -49,7 +49,7 @@ class MoviesRepository extends MoviesRepositoryAbstract {
         return Left(NotAuthorizedException('No tienes permisos suficientes'));
       }
       return Left(ServerException(
-          'Error: ${e.response?.statusCode} intentado conectar al servidor'));
+          'Error: ${e.response?.statusCode ?? ""} intentado conectar al servidor'));
     } catch (e) {
       return Left(UnknownErrorException('Error inesperado: ${e.toString()}'));
     }
