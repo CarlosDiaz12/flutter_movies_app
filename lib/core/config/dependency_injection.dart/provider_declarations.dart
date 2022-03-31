@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_movies_app/core/constants/remote_constants.dart';
+import 'package:flutter_movies_app/data/local/local_dao.dart';
 import 'package:flutter_movies_app/data/repository/movies_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DependencyInjection {
   static List<SingleChildWidget> get providers => _providers;
-  DependencyInjection._();
+  DependencyInjection();
   static List<SingleChildWidget> _providers = [];
   static final List<SingleChildWidget> _networkProviders = [
     Provider.value(value: _initHttpClient()),
@@ -21,10 +23,9 @@ class DependencyInjection {
   ];
 
   static final List<SingleChildWidget> _repositoryProviders = [
-    ProxyProvider<Dio, MoviesRepository>(
-      update: (context, dioClient, _) => MoviesRepository(
-        client: dioClient,
-      ),
+    ProxyProvider2<Dio, LocalDao, MoviesRepository>(
+      update: (context, dioClient, localDao, _) =>
+          MoviesRepository(client: dioClient, localDao: localDao),
     ),
 
     /*Provider.value(value: ExampleRepository),*/
@@ -51,7 +52,7 @@ class DependencyInjection {
   ];
 */
   static Future<void> setup() async {
-    _providers = [..._networkProviders, ..._repositoryProviders];
+    _providers = [...providers, ..._networkProviders, ..._repositoryProviders];
   }
 
   static Dio _initHttpClient() {
@@ -61,5 +62,10 @@ class DependencyInjection {
       ),
     );
     return client;
+  }
+
+  static void loadSharedPref(SharedPreferences preferences) {
+    _providers
+        .add(Provider.value(value: LocalDao(sharedPreferences: preferences)));
   }
 }
