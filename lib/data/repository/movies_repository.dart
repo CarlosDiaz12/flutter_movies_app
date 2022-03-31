@@ -159,4 +159,32 @@ class MoviesRepository extends MoviesRepositoryAbstract {
       return Left(UnknownErrorException('Error inesperado: ${e.toString()}'));
     }
   }
+
+  @override
+  Future<Either<Exception, List<Movie>>> getSimilarMovies(int movieId) async {
+    try {
+      var request = await _client.get(
+        '/movie/$movieId/similar',
+        queryParameters: RemoteConstants.GetApiKeyQueryParam(),
+      );
+      var response = ListMoviesResponse.fromMap(request.data);
+      response.results.sort(
+          (a, b) => a.title!.toLowerCase().compareTo(b.title!.toLowerCase()));
+
+      var result =
+          response.results.map((m) => MovieMapper().toModel(m)).toList();
+      return Right(result);
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 404) {
+        return Left(NotFoundException('Recurso no encontrado.'));
+      }
+      if (e.response?.statusCode == 401) {
+        return Left(NotAuthorizedException('No tienes permisos suficientes'));
+      }
+      return Left(ServerException(
+          'Error: ${e.response?.statusCode ?? ""} intentado conectar al servidor'));
+    } catch (e) {
+      return Left(UnknownErrorException('Error inesperado: ${e.toString()}'));
+    }
+  }
 }

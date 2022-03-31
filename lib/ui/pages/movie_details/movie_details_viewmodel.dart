@@ -1,10 +1,13 @@
 import 'package:flutter_movies_app/data/repository/movies_repository.dart';
+import 'package:flutter_movies_app/domain/models/movie.dart';
 import 'package:flutter_movies_app/domain/models/movie_cast.dart';
 import 'package:flutter_movies_app/domain/models/movie_detail.dart';
 import 'package:stacked/stacked.dart';
 
 class MovieDetailsViewModel extends BaseViewModel {
   MoviesRepository repository;
+  List<Movie>? _similarMovies;
+  List<Movie>? get similarMovies => _similarMovies;
   MovieDetail? _movie;
   MovieDetail? get movie => _movie;
   MovieCast? _cast;
@@ -29,6 +32,7 @@ class MovieDetailsViewModel extends BaseViewModel {
   Future<void> loadData() async {
     await _loadBasicDetails();
     await _loadCast();
+    await loadSimilarMovies();
   }
 
   Future<void> _loadBasicDetails() async {
@@ -80,5 +84,17 @@ class MovieDetailsViewModel extends BaseViewModel {
     });
     _currentRate = 0.0;
     setBusyForObject(_rateMovieSuccess, false);
+  }
+
+  Future<void> loadSimilarMovies() async {
+    clearErrors();
+    setBusyForObject(_similarMovies, true);
+    var res = await repository.getSimilarMovies(movieId);
+    res.fold((ex) {
+      setError(ex);
+    }, (data) {
+      _similarMovies = data;
+    });
+    setBusyForObject(_similarMovies, false);
   }
 }

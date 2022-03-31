@@ -10,4 +10,5 @@ abstract class MoviesRepositoryAbstract {
   Future<Either<Exception, MovieCast>> getMovieCast(int movieId);
   Future<Either<Exception, bool>> rateMovie(int movieId, double value);
   Future<Either<Exception, GuestSessionInfo>> getGuestSessionId();
+  Future<Either<Exception, List<Movie>>> getSimilarMovies(int movieId);
 }
