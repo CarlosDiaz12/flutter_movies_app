@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 import 'widgets/basic_details_widget.dart';
 import 'widgets/cast_item_widget.dart';
+import 'widgets/similar_movie_item.dart';
 
 class MovieDetailsPage extends StatelessWidget {
   final int movieId;
@@ -85,7 +86,7 @@ class _OverviewSection extends ViewModelWidget<MovieDetailsViewModel> {
           RatingSectionWidget(),
           SizedBox(height: 10),
           _SubtitleWidget(
-            text: 'Sinopsis',
+            text: 'Synopsis',
           ),
           SizedBox(height: 10),
           Text(
@@ -99,9 +100,50 @@ class _OverviewSection extends ViewModelWidget<MovieDetailsViewModel> {
           SizedBox(height: 10),
           _SubtitleWidget(text: 'Cast'),
           _CastListWidget(contentWidth: contentWidth),
+          SizedBox(height: 10),
+          _SubtitleWidget(text: 'Similar Movies'),
+          _SimilarMoviesSection(contentWidth: contentWidth)
         ],
       ),
     );
+  }
+}
+
+class _SimilarMoviesSection extends ViewModelWidget<MovieDetailsViewModel> {
+  final double contentWidth;
+  const _SimilarMoviesSection({Key? key, required this.contentWidth})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    double imageHeight = 320;
+    double imageWidth = 250;
+    return viewModel.busy(viewModel.similarMovies)
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Container(
+            margin: EdgeInsets.only(top: 10),
+            width: contentWidth,
+            height: 500,
+            child: GridView.builder(
+              itemCount: viewModel.similarMovies?.length,
+              cacheExtent: 6,
+              scrollDirection: Axis.horizontal,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 4 / 3,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+              ),
+              itemBuilder: (context, index) {
+                var item = viewModel.similarMovies?[index];
+                return SimilarMovieItem(
+                    item: item,
+                    imageWidth: imageWidth,
+                    imageHeight: imageHeight);
+              },
+            ));
   }
 }
 

@@ -171,8 +171,10 @@ class MoviesRepository extends MoviesRepositoryAbstract {
       response.results.sort(
           (a, b) => a.title!.toLowerCase().compareTo(b.title!.toLowerCase()));
 
-      var result =
-          response.results.map((m) => MovieMapper().toModel(m)).toList();
+      var result = response.results
+          .take(6)
+          .map((m) => MovieMapper().toModel(m))
+          .toList();
       return Right(result);
     } on DioError catch (e) {
       if (e.response?.statusCode == 404) {
