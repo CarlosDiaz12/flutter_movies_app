@@ -35,7 +35,6 @@ class BasicDetailsWidget extends StatelessWidget {
               _VoteAverageWidget(),
               SizedBox(width: 20),
               Container(
-                width: 320,
                 height: 50,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,

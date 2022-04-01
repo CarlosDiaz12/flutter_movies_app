@@ -19,7 +19,29 @@ class MovieDetailsPage extends StatelessWidget {
     return ViewModelBuilder<MovieDetailsViewModel>.reactive(
       builder: (context, viewModel, _) {
         return Scaffold(
-          body: viewModel.hasError ? _ErrorWidget() : _MainBody(),
+          body: viewModel.hasError
+              ? _ErrorWidget()
+              : NestedScrollView(
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return <Widget>[
+                      SliverAppBar(
+                        floating: false,
+                        pinned: true,
+                        flexibleSpace: FlexibleSpaceBar(
+                          centerTitle: true,
+                          title: Text(
+                            '${viewModel.movie?.title ?? 'Loading...'}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ];
+                  },
+                  body: _MainBody()),
         );
       },
       onModelReady: (viewModel) async {
@@ -42,12 +64,13 @@ class _MainBody extends ViewModelWidget<MovieDetailsViewModel> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Material(
-                    elevation: 16,
+        : SingleChildScrollView(
+            child: Column(
+              children: [
+                Material(
+                  elevation: 16,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
                     child: Stack(
                       children: [
                         _PosterWidget(posterPath: viewModel.movie?.poster_path),
@@ -60,10 +83,10 @@ class _MainBody extends ViewModelWidget<MovieDetailsViewModel> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 12),
-                  _OverviewSection(),
-                ],
-              ),
+                ),
+                SizedBox(height: 12),
+                _OverviewSection(),
+              ],
             ),
           );
   }
@@ -76,10 +99,10 @@ class _OverviewSection extends ViewModelWidget<MovieDetailsViewModel> {
 
   @override
   Widget build(BuildContext context, viewModel) {
-    var contentWidth = MediaQuery.of(context).size.width * 0.90;
+    var contentWidth = MediaQuery.of(context).size.width;
     return Container(
       width: contentWidth,
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
