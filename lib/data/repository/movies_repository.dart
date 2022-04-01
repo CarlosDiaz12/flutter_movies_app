@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_movies_app/core/constants/remote_constants.dart';
 import 'package:flutter_movies_app/core/error/exceptions.dart';
 import 'package:flutter_movies_app/data/local/local_dao.dart';
+import 'package:flutter_movies_app/data/mapper/guest_session_info_mapper.dart';
 import 'package:flutter_movies_app/data/mapper/movie_cast_mapper.dart';
 import 'package:flutter_movies_app/data/mapper/movie_details_mapper.dart';
 import 'package:flutter_movies_app/data/mapper/movie_mapper.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_movies_app/data/remote/response/get_movie_cast.dart';
 import 'package:flutter_movies_app/data/remote/response/get_movie_detail_response.dart';
 import 'package:flutter_movies_app/data/remote/response/list_movies_response.dart';
 import 'package:flutter_movies_app/data/remote/response/rate_movie_response.dart';
+import 'package:flutter_movies_app/domain/models/guest_session_info.dart';
 import 'package:flutter_movies_app/domain/models/movie.dart';
 import 'package:flutter_movies_app/domain/models/movie_cast.dart';
 import 'package:flutter_movies_app/domain/models/movie_detail.dart';
@@ -49,7 +51,7 @@ class MoviesRepository extends MoviesRepositoryAbstract {
         return Left(NotAuthorizedException('No tienes permisos suficientes'));
       }
       return Left(ServerException(
-          'Error: ${e.response?.statusCode} intentado conectar al servidor'));
+          'Error: ${e.response?.statusCode ?? ""} intentado conectar al servidor'));
     } catch (e) {
       return Left(UnknownErrorException('Error inesperado: ${e.toString()}'));
     }
@@ -135,7 +137,7 @@ class MoviesRepository extends MoviesRepositoryAbstract {
   }
 
   @override
-  Future<Either<Exception, String?>> getGuestSessionId() async {
+  Future<Either<Exception, GuestSessionInfo>> getGuestSessionId() async {
     try {
       var request = await _client.post('/authentication/guest_session/new',
           queryParameters: RemoteConstants.GetApiKeyQueryParam());
@@ -143,7 +145,7 @@ class MoviesRepository extends MoviesRepositoryAbstract {
       var response = GetGuestSessionIdResponse.fromMap(request.data);
       if (!response.success)
         throw Exception("No se pudo obtener el session id");
-      return Right(response.guest_session_id);
+      return Right(GuestSessionInfoMapper().toModel(response));
     } on DioError catch (e) {
       if (e.response?.statusCode == 404) {
         return Left(NotFoundException('Recurso no encontrado.'));
@@ -153,6 +155,36 @@ class MoviesRepository extends MoviesRepositoryAbstract {
       }
       return Left(ServerException(
           'Error: ${e.response?.statusCode} intentado conectar al servidor'));
+    } catch (e) {
+      return Left(UnknownErrorException('Error inesperado: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Exception, List<Movie>>> getSimilarMovies(int movieId) async {
+    try {
+      var request = await _client.get(
+        '/movie/$movieId/similar',
+        queryParameters: RemoteConstants.GetApiKeyQueryParam(),
+      );
+      var response = ListMoviesResponse.fromMap(request.data);
+      response.results.sort(
+          (a, b) => a.title!.toLowerCase().compareTo(b.title!.toLowerCase()));
+
+      var result = response.results
+          .take(6)
+          .map((m) => MovieMapper().toModel(m))
+          .toList();
+      return Right(result);
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 404) {
+        return Left(NotFoundException('Recurso no encontrado.'));
+      }
+      if (e.response?.statusCode == 401) {
+        return Left(NotAuthorizedException('No tienes permisos suficientes'));
+      }
+      return Left(ServerException(
+          'Error: ${e.response?.statusCode ?? ""} intentado conectar al servidor'));
     } catch (e) {
       return Left(UnknownErrorException('Error inesperado: ${e.toString()}'));
     }
