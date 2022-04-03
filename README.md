@@ -6,7 +6,7 @@ A flutter app using the The Movie Database API:
 ## Setup
 
 Add a .env file to the root directory and the content should be:
-API_KEY= <your API KEY>
+API_KEY=your API KEY here
 
 ## Libraries used
 
