@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter_movies_app/core/constants/app_constants.dart';
 import 'package:flutter_movies_app/data/local/dto/movie_local_dto.dart';
-import 'package:flutter_movies_app/domain/models/movie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MovieLocalDao {
