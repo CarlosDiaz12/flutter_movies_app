@@ -6,16 +6,10 @@ A flutter app using the The Movie Database API:
 
 ## Screenshots
 
-<style>
- img {
-     padding: 10px;
- }
-</style>
-
-<img src="./screenshots/ss-1.png" width="300px"></img>
-<img src="./screenshots/ss-2.png" width="300px"></img>
-<img src="./screenshots/ss-3.png" width="300px"></img>
-<img src="./screenshots/ss-4.png" width="300px"></img>
+<img style="padding: 10px;" src="./screenshots/ss-1.png" width="300px"></img>
+<img style="padding: 10px;" src="./screenshots/ss-2.png" width="300px"></img>
+<img style="padding: 10px;" src="./screenshots/ss-3.png" width="300px"></img>
+<img style="padding: 10px;" src="./screenshots/ss-4.png" width="300px"></img>
 
 ## Setup
 
