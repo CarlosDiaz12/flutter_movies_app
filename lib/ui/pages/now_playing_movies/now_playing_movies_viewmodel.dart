@@ -33,23 +33,29 @@ class NowPlayingMoviesViewModel extends BaseViewModel {
     setBusy(false);
   }
 
-  Future<bool> addMovieToFavorites(Movie movie) async {
-    var movieDto = MovieLocalDto(
-      Id: movie.id.toString(),
-      title: movie.original_title,
-      release_date: movie.release_date,
-      vote_average: movie.vote_average,
-    );
-    var alreadyFavorite = movieLocalDao.isAlreadyFavorite(movie.id.toString());
+  Future<bool> addMovieToFavorites(Movie movie, bool fromDetailPage) async {
     bool currentState = false;
-    if (alreadyFavorite) {
-      await movieLocalDao.removeMovieFromFavorites(movie.id.toString());
-    } else {
-      currentState = true;
-      await movieLocalDao.addMovieToFavorite(movieDto);
+    if (!fromDetailPage) {
+      var movieDto = MovieLocalDto(
+        Id: movie.id.toString(),
+        title: movie.original_title,
+        release_date: movie.release_date,
+        vote_average: movie.vote_average,
+      );
+      var alreadyFavorite =
+          movieLocalDao.isAlreadyFavorite(movie.id.toString());
+
+      if (alreadyFavorite) {
+        await movieLocalDao.removeMovieFromFavorites(movie.id.toString());
+      } else {
+        currentState = true;
+        await movieLocalDao.addMovieToFavorite(movieDto);
+      }
     }
+
     var selectedMovie =
         _moviesList?.where((element) => element.id == movie.id).first;
+
     selectedMovie?.isFavorite = currentState;
     notifyListeners();
     return currentState;

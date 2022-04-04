@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movies_app/core/config/routing/routes.gr.dart';
 import 'package:flutter_movies_app/core/error/exceptions.dart';
 import 'package:flutter_movies_app/data/local/local_dao.dart';
 import 'package:flutter_movies_app/data/local/movie_local_dao.dart';
@@ -19,6 +21,17 @@ class NowPlayingMoviesPage extends StatelessWidget {
         return Scaffold(
             appBar: AppBar(
               title: Text('Now Playing Movies'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    AutoRouter.of(context).push(FavoriteMoviesRoute());
+                  },
+                  child: Text(
+                    'Go to Favorites',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                )
+              ],
             ),
             body: viewModel.hasError ? _ErrorWidget() : _MainBody());
       },
@@ -92,11 +105,16 @@ class _MainBody extends ViewModelWidget<NowPlayingMoviesViewModel> {
               var movie = viewModel.moviesList![index];
               return MovieItem(
                 movie: movie,
-                onFavoritePressed: (String movieTitle) async {
-                  var res = await viewModel.addMovieToFavorites(movie);
-                  var action = res ? 'added to' : 'removed from';
-                  _showSnackBar(
-                      context, '${movie.original_title} $action Favorites');
+                onFavoritePressed:
+                    (String movieTitle, bool fromDetailPage) async {
+                  viewModel.notifyListeners();
+                  var res = await viewModel.addMovieToFavorites(
+                      movie, fromDetailPage);
+                  if (!fromDetailPage) {
+                    var action = res ? 'added to' : 'removed from';
+                    _showSnackBar(
+                        context, '${movie.original_title} $action Favorites');
+                  }
                 },
               );
             },

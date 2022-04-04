@@ -5,7 +5,7 @@ import 'package:flutter_movies_app/core/constants/remote_constants.dart';
 import 'package:flutter_movies_app/domain/models/movie.dart';
 
 class MovieItem extends StatelessWidget {
-  final Function(String movieTitle) onFavoritePressed;
+  final Function(String movieTitle, bool fromDetailPage) onFavoritePressed;
   const MovieItem({
     Key? key,
     required this.movie,
@@ -18,8 +18,10 @@ class MovieItem extends StatelessWidget {
     return Card(
       elevation: 8,
       child: InkWell(
-        onTap: () {
-          AutoRouter.of(context).push(MovieDetailsRoute(movieId: movie.id!));
+        onTap: () async {
+          await AutoRouter.of(context)
+              .push(MovieDetailsRoute(movieId: movie.id!));
+          onFavoritePressed.call(movie.original_title!, true);
         },
         child: ClipRRect(
           borderRadius: BorderRadius.only(
@@ -42,7 +44,7 @@ class MovieItem extends StatelessWidget {
                       (movie.isFavorite ?? false) ? Colors.red : Colors.white,
                   iconSize: 36,
                   onPressed: () {
-                    onFavoritePressed.call(movie.original_title!);
+                    onFavoritePressed.call(movie.original_title!, false);
                   },
                 ),
               )
