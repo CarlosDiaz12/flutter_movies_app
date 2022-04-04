@@ -7,11 +7,13 @@ class MovieLocalDto {
   String? title;
   String? release_date;
   double? vote_average;
+  String? poster_path;
   MovieLocalDto({
     this.Id,
     this.title,
     this.release_date,
     this.vote_average,
+    this.poster_path,
   });
 
   MovieLocalDto copyWith({
@@ -19,12 +21,14 @@ class MovieLocalDto {
     String? title,
     String? release_date,
     double? vote_average,
+    String? poster_path,
   }) {
     return MovieLocalDto(
       Id: Id ?? this.Id,
       title: title ?? this.title,
       release_date: release_date ?? this.release_date,
       vote_average: vote_average ?? this.vote_average,
+      poster_path: poster_path ?? this.poster_path,
     );
   }
 
@@ -43,6 +47,9 @@ class MovieLocalDto {
     if (vote_average != null) {
       result.addAll({'vote_average': vote_average});
     }
+    if (poster_path != null) {
+      result.addAll({'poster_path': poster_path});
+    }
 
     return result;
   }
@@ -53,6 +60,7 @@ class MovieLocalDto {
       title: map['title'],
       release_date: map['release_date'],
       vote_average: map['vote_average']?.toDouble(),
+      poster_path: map['poster_path'],
     );
   }
 
@@ -63,7 +71,7 @@ class MovieLocalDto {
 
   @override
   String toString() {
-    return 'MovieLocalDto(Id: $Id, title: $title, release_date: $release_date, vote_average: $vote_average)';
+    return 'MovieLocalDto(Id: $Id, title: $title, release_date: $release_date, vote_average: $vote_average, poster_path: $poster_path)';
   }
 
   @override
@@ -74,7 +82,8 @@ class MovieLocalDto {
         other.Id == Id &&
         other.title == title &&
         other.release_date == release_date &&
-        other.vote_average == vote_average;
+        other.vote_average == vote_average &&
+        other.poster_path == poster_path;
   }
 
   @override
@@ -82,6 +91,7 @@ class MovieLocalDto {
     return Id.hashCode ^
         title.hashCode ^
         release_date.hashCode ^
-        vote_average.hashCode;
+        vote_average.hashCode ^
+        poster_path.hashCode;
   }
 }

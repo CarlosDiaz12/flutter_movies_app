@@ -1,7 +1,19 @@
 # Flutter Movie App
 
 A flutter app using the The Movie Database API:
+
 - https://www.themoviedb.org/
+
+## Screenshots
+
+<style>
+ img {
+     padding: 5px;
+ }
+</style>
+
+<img src="./screenshots/sshot-1.png" width="300px"></img>
+<img src="./screenshots/sshot-1.png" width="300px"></img>
 
 ## Setup
 
@@ -17,4 +29,3 @@ API_KEY=your API KEY here
 - flutter_dotenv for enviroment variables
 - flutter_raiting_bar for ui
 - dartz for managing methods responses
-

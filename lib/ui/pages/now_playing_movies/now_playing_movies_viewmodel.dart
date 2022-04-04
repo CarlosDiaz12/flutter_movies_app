@@ -37,11 +37,11 @@ class NowPlayingMoviesViewModel extends BaseViewModel {
     bool currentState = false;
     if (!fromDetailPage) {
       var movieDto = MovieLocalDto(
-        Id: movie.id.toString(),
-        title: movie.original_title,
-        release_date: movie.release_date,
-        vote_average: movie.vote_average,
-      );
+          Id: movie.id.toString(),
+          title: movie.original_title,
+          release_date: movie.release_date,
+          vote_average: movie.vote_average,
+          poster_path: movie.poster_path);
       var alreadyFavorite =
           movieLocalDao.isAlreadyFavorite(movie.id.toString());
 

@@ -110,6 +110,7 @@ class MovieDetailsViewModel extends BaseViewModel {
       title: _movie?.original_title,
       release_date: _movie?.release_date,
       vote_average: _movie?.vote_average,
+      poster_path: _movie?.poster_path,
     );
     var alreadyFavorite =
         movieLocalDao.isAlreadyFavorite(_movie!.id.toString());
