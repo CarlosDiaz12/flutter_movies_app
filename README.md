@@ -8,7 +8,7 @@ A flutter app using the The Movie Database API:
 
 <style>
  img {
-     padding: 5px;
+     padding: 10px;
  }
 </style>
 
