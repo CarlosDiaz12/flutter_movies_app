@@ -4,15 +4,18 @@ import 'package:flutter_movies_app/core/constants/remote_constants.dart';
 import 'package:flutter_movies_app/core/error/exceptions.dart';
 import 'package:flutter_movies_app/data/local/local_dao.dart';
 import 'package:flutter_movies_app/data/mapper/guest_session_info_mapper.dart';
+import 'package:flutter_movies_app/data/mapper/guest_session_list_id_mapper.dart';
 import 'package:flutter_movies_app/data/mapper/movie_cast_mapper.dart';
 import 'package:flutter_movies_app/data/mapper/movie_details_mapper.dart';
 import 'package:flutter_movies_app/data/mapper/movie_mapper.dart';
 import 'package:flutter_movies_app/data/remote/request/rate_movie_request.dart';
 import 'package:flutter_movies_app/data/remote/response/get_movie_cast.dart';
 import 'package:flutter_movies_app/data/remote/response/get_movie_detail_response.dart';
+import 'package:flutter_movies_app/data/remote/response/guest_session_list_id_response.dart';
 import 'package:flutter_movies_app/data/remote/response/list_movies_response.dart';
 import 'package:flutter_movies_app/data/remote/response/rate_movie_response.dart';
 import 'package:flutter_movies_app/domain/models/guest_session_info.dart';
+import 'package:flutter_movies_app/domain/models/guest_session_list_info.dart';
 import 'package:flutter_movies_app/domain/models/movie.dart';
 import 'package:flutter_movies_app/domain/models/movie_cast.dart';
 import 'package:flutter_movies_app/domain/models/movie_detail.dart';
@@ -185,6 +188,33 @@ class MoviesRepository extends MoviesRepositoryAbstract {
       }
       return Left(ServerException(
           'Error: ${e.response?.statusCode ?? ""} intentado conectar al servidor'));
+    } catch (e) {
+      return Left(UnknownErrorException('Error inesperado: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Exception, GuestSessionListInfo>> createGuestList(
+      String sessionId) async {
+    try {
+      var request = await _client.post(
+        '/list',
+        queryParameters: RemoteConstants.GetApiKeyQueryParam()
+          ..addAll({'session_id': sessionId}),
+      );
+
+      var response = GuestSessionListIdResponse.fromMap(request.data);
+      if (!response.success) throw Exception("Cannot get guest list id");
+      return Right(GuestSessionListIdMapper().toModel(response));
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 404) {
+        return Left(NotFoundException('Recurso no encontrado.'));
+      }
+      if (e.response?.statusCode == 401) {
+        return Left(NotAuthorizedException('No tienes permisos suficientes'));
+      }
+      return Left(ServerException(
+          'Error: ${e.response?.statusCode} intentado conectar al servidor'));
     } catch (e) {
       return Left(UnknownErrorException('Error inesperado: ${e.toString()}'));
     }

@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movies_app/core/config/routing/routes.gr.dart';
 import 'package:flutter_movies_app/core/constants/remote_constants.dart';
 import 'package:flutter_movies_app/domain/models/movie.dart';
 
@@ -16,44 +18,49 @@ class SimilarMovieItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      elevation: 8,
-      child: item?.poster_path == null
-          ? Container(
-              width: imageWidth,
-              height: imageHeight,
-              child: Center(
-                child: Text(
-                  'No Image available',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )
-          : Image.network(
-              '${RemoteConstants.IMAGE_API_URL}${item?.poster_path}',
-              fit: BoxFit.cover,
-              cacheWidth: 260,
-              colorBlendMode: BlendMode.modulate,
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent? loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-                return Container(
-                  width: imageWidth,
-                  height: imageHeight,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                          : null,
-                    ),
+    return GestureDetector(
+      onTap: () {
+        AutoRouter.of(context).push(MovieDetailsRoute(movieId: item!.id!));
+      },
+      child: Card(
+        margin: EdgeInsets.zero,
+        elevation: 8,
+        child: item?.poster_path == null
+            ? Container(
+                width: imageWidth,
+                height: imageHeight,
+                child: Center(
+                  child: Text(
+                    'No Image available',
+                    textAlign: TextAlign.center,
                   ),
-                );
-              },
-            ),
+                ),
+              )
+            : Image.network(
+                '${RemoteConstants.IMAGE_API_URL}${item?.poster_path}',
+                fit: BoxFit.cover,
+                cacheWidth: 260,
+                colorBlendMode: BlendMode.modulate,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return Container(
+                    width: imageWidth,
+                    height: imageHeight,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
+              ),
+      ),
     );
   }
 }

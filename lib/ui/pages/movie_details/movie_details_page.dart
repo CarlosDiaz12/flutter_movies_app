@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movies_app/core/constants/remote_constants.dart';
 import 'package:flutter_movies_app/core/error/exceptions.dart';
+import 'package:flutter_movies_app/data/local/movie_local_dao.dart';
 import 'package:flutter_movies_app/data/repository/movies_repository.dart';
 import 'package:flutter_movies_app/ui/pages/movie_details/movie_details_viewmodel.dart';
 import 'package:flutter_movies_app/ui/pages/movie_details/widgets/rating_section_widget.dart';
@@ -41,13 +42,15 @@ class MovieDetailsPage extends StatelessWidget {
                       ),
                     ];
                   },
-                  body: _MainBody()),
+                  body: _MainBody(),
+                ),
         );
       },
       onModelReady: (viewModel) async {
         await viewModel.loadData();
       },
       viewModelBuilder: () => MovieDetailsViewModel(
+        movieLocalDao: Provider.of<MovieLocalDao>(context),
         movieId: movieId,
         repository: Provider.of<MoviesRepository>(context),
       ),
@@ -57,6 +60,21 @@ class MovieDetailsPage extends StatelessWidget {
 
 class _MainBody extends ViewModelWidget<MovieDetailsViewModel> {
   const _MainBody({Key? key}) : super(key: key);
+
+  _showSnackBar(BuildContext ctx, String message, [bool isError = false]) {
+    var snackBar = SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: isError ? Colors.red : Colors.green,
+    );
+    ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+  }
 
   @override
   Widget build(BuildContext context, viewModel) {
@@ -79,6 +97,23 @@ class _MainBody extends ViewModelWidget<MovieDetailsViewModel> {
                           releaseDate: viewModel.movie?.release_date,
                           voteAverage: viewModel.movie?.vote_average,
                           genres: viewModel.movie?.genres,
+                        ),
+                        Positioned(
+                          top: 10,
+                          right: 10,
+                          child: IconButton(
+                            icon: Icon(Icons.favorite),
+                            color: (viewModel.movie?.isFavorite ?? false)
+                                ? Colors.red
+                                : Colors.white,
+                            iconSize: 36,
+                            onPressed: () async {
+                              var res = await viewModel.addMovieToFavorites();
+                              var action = res ? 'added to' : 'removed from';
+                              _showSnackBar(context,
+                                  '${viewModel.movie?.original_title} $action Favorites');
+                            },
+                          ),
                         )
                       ],
                     ),

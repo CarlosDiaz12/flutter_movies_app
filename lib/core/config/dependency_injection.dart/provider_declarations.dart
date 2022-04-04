@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_movies_app/core/constants/remote_constants.dart';
 import 'package:flutter_movies_app/data/local/local_dao.dart';
+import 'package:flutter_movies_app/data/local/movie_local_dao.dart';
 import 'package:flutter_movies_app/data/repository/movies_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -67,5 +68,7 @@ class DependencyInjection {
   static void loadSharedPref(SharedPreferences preferences) {
     _providers
         .add(Provider.value(value: LocalDao(sharedPreferences: preferences)));
+    _providers.add(
+        Provider.value(value: MovieLocalDao(sharedPreferences: preferences)));
   }
 }

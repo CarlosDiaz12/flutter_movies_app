@@ -1,3 +1,5 @@
+import 'package:flutter_movies_app/data/local/dto/movie_local_dto.dart';
+import 'package:flutter_movies_app/data/local/movie_local_dao.dart';
 import 'package:flutter_movies_app/data/repository/movies_repository.dart';
 import 'package:flutter_movies_app/domain/models/movie.dart';
 import 'package:flutter_movies_app/domain/models/movie_cast.dart';
@@ -19,7 +21,9 @@ class MovieDetailsViewModel extends BaseViewModel {
   double _movieRate = 0;
   double get movieRate => _movieRate;
   int movieId;
+  MovieLocalDao movieLocalDao;
   MovieDetailsViewModel({
+    required this.movieLocalDao,
     required this.movieId,
     required this.repository,
   });
@@ -43,6 +47,8 @@ class MovieDetailsViewModel extends BaseViewModel {
       setError(ex);
     }, (data) {
       _movie = data;
+      _movie?.isFavorite =
+          movieLocalDao.isAlreadyFavorite(_movie!.id.toString());
       _movieRate = data.vote_average!;
     });
     setBusy(false);
@@ -96,5 +102,28 @@ class MovieDetailsViewModel extends BaseViewModel {
       _similarMovies = data;
     });
     setBusyForObject(_similarMovies, false);
+  }
+
+  Future<bool> addMovieToFavorites() async {
+    var movieDto = MovieLocalDto(
+      Id: _movie?.id.toString(),
+      title: _movie?.original_title,
+      release_date: _movie?.release_date,
+      vote_average: _movie?.vote_average,
+      poster_path: _movie?.poster_path,
+    );
+    var alreadyFavorite =
+        movieLocalDao.isAlreadyFavorite(_movie!.id.toString());
+    bool currentState = false;
+    if (alreadyFavorite) {
+      await movieLocalDao.removeMovieFromFavorites(_movie!.id.toString());
+    } else {
+      currentState = true;
+      await movieLocalDao.addMovieToFavorite(movieDto);
+    }
+    var selectedMovie = _movie;
+    selectedMovie?.isFavorite = currentState;
+    notifyListeners();
+    return currentState;
   }
 }

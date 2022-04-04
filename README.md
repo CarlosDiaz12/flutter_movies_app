@@ -1,16 +1,33 @@
-# flutter_movies_app
+# Flutter Movie App
 
-A new Flutter project.
+A flutter app using the The Movie Database API:
 
-## Getting Started
+- https://www.themoviedb.org/
 
-This project is a starting point for a Flutter application.
+## Screenshots
 
-A few resources to get you started if this is your first Flutter project:
+<style>
+ img {
+     padding: 10px;
+ }
+</style>
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+<img src="./screenshots/ss-1.png" width="300px"></img>
+<img src="./screenshots/ss-2.png" width="300px"></img>
+<img src="./screenshots/ss-3.png" width="300px"></img>
+<img src="./screenshots/ss-4.png" width="300px"></img>
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Setup
+
+Add a .env file to the root directory and the content should be:
+API_KEY=your API KEY here
+
+## Libraries used
+
+- Stacked (State Managment)
+- Provider
+- AutoRoute for routing
+- Dio for Http Calls
+- flutter_dotenv for enviroment variables
+- flutter_raiting_bar for ui
+- dartz for managing methods responses
