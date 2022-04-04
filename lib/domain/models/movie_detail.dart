@@ -12,6 +12,7 @@ import 'spoken_language.dart';
 class MovieDetail {
   bool? adult;
   String? backdrop_path;
+  bool? isFavorite;
   int? budget;
   List<Genre>? genres;
   String? homepage;
@@ -37,6 +38,7 @@ class MovieDetail {
   MovieDetail({
     this.adult,
     this.backdrop_path,
+    this.isFavorite,
     this.budget,
     this.genres,
     this.homepage,
