@@ -12,6 +12,7 @@ class FavoriteMoviesViewModel extends BaseViewModel {
 
   Future<void> loadData() async {
     setBusy(true);
+    await Future.delayed(Duration(seconds: 1));
     var res = movieLocalDao.getFavoriteMovies();
     _favoriteMovies = res;
     setBusy(false);
