@@ -5,13 +5,14 @@ import 'package:flutter_movies_app/core/constants/remote_constants.dart';
 import 'package:flutter_movies_app/domain/models/movie.dart';
 
 class MovieItem extends StatelessWidget {
+  final Function(String movieTitle) onFavoritePressed;
   const MovieItem({
     Key? key,
     required this.movie,
+    required this.onFavoritePressed,
   }) : super(key: key);
 
   final Movie movie;
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -31,7 +32,20 @@ class MovieItem extends StatelessWidget {
               _MovieBanner(bannerUrl: movie.backdrop_path),
               _MovieTitle(title: movie.title),
               _MovieReleaseDate(releaseDate: movie.release_date),
-              _MovieAverageVote(voteAverage: movie.vote_average)
+              _MovieAverageVote(voteAverage: movie.vote_average),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: IconButton(
+                  icon: Icon(Icons.favorite),
+                  color:
+                      (movie.isFavorite ?? false) ? Colors.red : Colors.white,
+                  iconSize: 36,
+                  onPressed: () {
+                    onFavoritePressed.call(movie.original_title!);
+                  },
+                ),
+              )
             ],
           ),
         ),

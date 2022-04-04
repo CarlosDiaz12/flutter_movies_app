@@ -29,6 +29,16 @@ class MovieLocalDao {
     }
   }
 
+  Future<void> removeMovieFromFavorites(String movieId) async {
+    var savedMovies =
+        getFavoriteMovies()?.where((movie) => movie.Id != movieId).toList();
+    await _sharedPreferences.remove(AppConstants.FAVORITE_MOVIES_LIST_KEY);
+    var encodedList =
+        jsonEncode(savedMovies?.map((movie) => movie.toMap()).toList());
+    await _sharedPreferences.setString(
+        AppConstants.FAVORITE_MOVIES_LIST_KEY, encodedList);
+  }
+
   List<MovieLocalDto>? getFavoriteMovies() {
     var results = <MovieLocalDto>[];
     if (_sharedPreferences.containsKey(AppConstants.FAVORITE_MOVIES_LIST_KEY)) {
@@ -39,5 +49,10 @@ class MovieLocalDao {
       results = decodedJson.toList();
     }
     return results;
+  }
+
+  bool isAlreadyFavorite(String movieId) {
+    var values = getFavoriteMovies();
+    return values?.any((element) => element.Id == movieId) ?? false;
   }
 }

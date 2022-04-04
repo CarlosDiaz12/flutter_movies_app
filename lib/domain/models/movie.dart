@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 class Movie {
   String? poster_path;
   bool? adult;
+  bool? isFavorite;
   String? overview;
   String? release_date;
   List<int>? genre_ids;
@@ -34,11 +35,13 @@ class Movie {
     this.vote_count,
     this.video,
     this.vote_average,
+    this.isFavorite,
   });
 
   Movie copyWith({
     String? poster_path,
     bool? adult,
+    bool? isFavorite,
     String? overview,
     String? release_date,
     List<int>? genre_ids,

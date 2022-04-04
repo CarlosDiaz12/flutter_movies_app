@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movies_app/core/error/exceptions.dart';
 import 'package:flutter_movies_app/data/local/local_dao.dart';
+import 'package:flutter_movies_app/data/local/movie_local_dao.dart';
 import 'package:flutter_movies_app/data/repository/movies_repository.dart';
 import 'package:flutter_movies_app/ui/pages/now_playing_movies/widgets/movie_item_widget.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,7 @@ class NowPlayingMoviesPage extends StatelessWidget {
         await viewModel.checkAndGetSessionId();
       },
       viewModelBuilder: () => NowPlayingMoviesViewModel(
+        movieLocalDao: Provider.of<MovieLocalDao>(context),
         localDao: Provider.of<LocalDao>(context),
         repository: Provider.of<MoviesRepository>(context),
       ),
@@ -61,6 +63,21 @@ class _ErrorWidget extends ViewModelWidget<NowPlayingMoviesViewModel> {
 class _MainBody extends ViewModelWidget<NowPlayingMoviesViewModel> {
   const _MainBody({Key? key}) : super(key: key);
 
+  _showSnackBar(BuildContext ctx, String message, [bool isError = false]) {
+    var snackBar = SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: isError ? Colors.red : Colors.green,
+    );
+    ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context, viewModel) {
     return viewModel.isBusy
@@ -73,7 +90,15 @@ class _MainBody extends ViewModelWidget<NowPlayingMoviesViewModel> {
             separatorBuilder: (ctx, int) => SizedBox(height: 6),
             itemBuilder: (ctx, index) {
               var movie = viewModel.moviesList![index];
-              return MovieItem(movie: movie);
+              return MovieItem(
+                movie: movie,
+                onFavoritePressed: (String movieTitle) async {
+                  var res = await viewModel.addMovieToFavorites(movie);
+                  var action = res ? 'added to' : 'removed from';
+                  _showSnackBar(
+                      context, '${movie.original_title} $action Favorites');
+                },
+              );
             },
           );
   }
